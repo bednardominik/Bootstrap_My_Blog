@@ -1,6 +1,16 @@
 from flask import Flask, render_template, request
 from datetime import date, timedelta
 import requests
+import smtplib
+from dotenv import load_dotenv
+import os
+
+
+load_dotenv()
+
+my_email = os.getenv("EMAIL")
+to_email = os.getenv("TO_EMAIL")
+password = os.getenv("EMAIL_PASSWORD")
 
 app = Flask(__name__)
 
@@ -24,10 +34,16 @@ def about():
 def contact():
     if request.method == "POST":
         data = request.form
-        print(data["name"])
-        print(data["email"])
-        print(data["phone"])
-        print(data["message"])
+        with smtplib.SMTP("smtp.gmail.com", 587) as connection:
+            # Šifrování
+            connection.starttls()
+            # Login pod kterým odešlu mail
+            connection.login(user=my_email, password=password)
+            # Struktura mainlu
+            connection.sendmail(
+                from_addr=my_email,
+                to_addrs=to_email,
+                msg=f"Subject:Travel_blog\n\nName: {data['name']}\nEmail: {data['email']}\nPhone: {data['phone']}\nMessage: {data['message']}")
         return render_template("contact.html", msg_sent=True)
     return render_template("contact.html", msg_sent=False)
 
