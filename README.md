@@ -1,6 +1,6 @@
 # Upgraded Blog
 
-This is a Flask-based travel blog project.
+This is a Flask-based blog project.
 
 ## Setup
 
